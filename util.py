@@ -23,8 +23,8 @@ Input: example.pdf
 Output: example-i.jpg (i = 1->#pages)
 Requires working imagemagick - which means this will probably only work on Nick's computer
 """
-def splitPDF(name):
-	cmd = "convert {}.pdf myDir/{}.jpg".format(name, name)
+def splitPDF(name, inputDir, outputDir):
+	cmd = "convert {}/{}.pdf {}/{}.jpg".format(inputDir, name, outputDir, name)
 	os.system(cmd)
 
 
