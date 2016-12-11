@@ -5,6 +5,17 @@ import os
 import cv2
 
 
+
+# >>> import csv
+# >>> with open('names.csv') as csvfile:
+# ...     reader = csv.DictReader(csvfile)
+# ...     for row in reader:
+# ...         print(row['first_name'], row['last_name'])
+# ...
+
+
+
+########All code from here onwards is from before the great refactor - its deprecated#######
 def csvToList(file):
 	with open(file) as csvfile:
 	    reader = csv.DictReader(csvfile)
