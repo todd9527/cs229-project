@@ -6,6 +6,13 @@ import cv2
 
 
 
+
+def load(fileName):
+	with open(fileName) as csvfile:
+		reader = csv.DictReader(csvfile)
+		return list(reader)
+	
+
 # >>> import csv
 # >>> with open('names.csv') as csvfile:
 # ...     reader = csv.DictReader(csvfile)

@@ -1,0 +1,18 @@
+Example call: foo.py pageImg boundingBoxes 100
+
+pageImg1.jpg
+pageImg2.jpg
+
+pageImg*.jpg 
+page = argv
+
+
+
+preprocessor gets us our pages
+
+bounding boxes get us our 
+
+pdfUrl -> pages
+
+pages -> bbs, labels
+
