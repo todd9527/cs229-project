@@ -32,12 +32,24 @@ def splitPDF(name, inputDir, outputDir):
 Given an image fileName, display it
 Optional: display with bounding boxes
 """
-def showImage(imgfile, color=None, boundingBoxes=None, bbColor=None):
-	img = cv2.imread(imgfile, cv2.IMREAD_GRAYSCALE) #actually change the color scheme
+def showImage(imgfile, color=None, boundingBoxes=None, points=None, bbColor=(200,0,0)):
+	img = cv2.imread(imgfile)#, cv2.IMREAD_GRAYSCALE) #actually change the color scheme
 	if boundingBoxes is not None:
 		for bb in boundingBoxes:
 			x,y,w,h = bb
-			cv2.rectangle(img, (x,y), (x+w, y+h), (0,255,0),1)
+			cv2.rectangle(img, (x,y), (x+w, y+h), bbColor,1)
+	if points is not None:
+		for point in points:
+			x,y = point
+			cv2.circle(img, (x,y), 3, (0, 255, 0), -1)
+
 	cv2.imshow('image',img)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
+
+
+def getBoxCenterPoint(x,y,w,h):
+	return (x + w/2, y + h/2)
+
+def drawDot(img, x,y, color=None):
+	cv2.circle(img, (x, y), 3, (0, 255, 0), -1)
