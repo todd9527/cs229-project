@@ -93,7 +93,8 @@ for i in range(1, len(sys.argv)):
 		points = np.array(character_locations)
 		for num_clusters in range(1, MAX_CLUSTERS + 1):
 
-			_ , assignments[num_clusters, :], centroids = cv2.kmeans(points, num_clusters, \
+			print np.float32(points)
+			_ , assignments[num_clusters, :], centroids = cv2.kmeans(np.float32(points), num_clusters, \
 			 		convergence_reqs, 30, cv2.KMEANS_RANDOM_CENTERS) 
 			if num_clusters > 1:
 				silhouette_scores[num_clusters] = metrics.silhouette_score(points, assignments[num_clusters, :], metric='euclidean')
