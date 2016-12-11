@@ -72,20 +72,20 @@ for i in range(1, len(sys.argv)):
 	# img = cv2.imread(sys.argv[i], cv2.IMREAD_GRAYSCALE)
 	# m, n = img.shape
 	character_locations = [] # Character locations (derived from character bounding boxes) in corresponding pdf 
-	curr_filename = sys.argv[i]
-	with open(curr_filename, 'r') as ifile:
-		reader = csv.reader(ifile, delimiter=' ', quotechar='|')
-     	for row in reader:
-     		x, y, width, height = row
-     		character_locations.append( (2 * x + width) / 2, (2 * y + height) / 2)
+	print sys.argv[i]
+	with open(sys.argv[i], 'rb') as ifile:
+		readerx = csv.reader(ifile)
+		for row in readerx:
+			x, y, width, height = row
+			character_locations.append( ((2 * float(x) + float(width)) / 2, (2 * float(y) + float(height)) / 2) )
 
 	# best_clusters = []
 
-	with open(OUTPUT_FILENAME + i + '.csv') as ofile:
-		writer = csv.writer(ofile, delimiter=' ', quotechar='|')
+	with open(OUTPUT_FILENAME + str(i) + '.csv', 'w') as ofile:
+		writer = csv.writer(ofile)
 		
-		assignments = np.zeros(MAX_CLUSTERS + 1, len(character_locations))
-		silhouette_scores = np.zeros(MAX_CLUSTERS + 1, 1) # Best value is 1, worst value is -1 
+		assignments = np.zeros((MAX_CLUSTERS + 1, len(character_locations)))
+		silhouette_scores = np.zeros((MAX_CLUSTERS + 1, 1)) # Best value is 1, worst value is -1 
 
 
 		# Run k-means for variable number of clusters 
@@ -93,7 +93,7 @@ for i in range(1, len(sys.argv)):
 		points = np.array(character_locations)
 		for num_clusters in range(1, MAX_CLUSTERS + 1):
 
-			_ , assignments[num_clusters, :], centroids = cv2.KMeans(points, num_clusters, \
+			_ , assignments[num_clusters, :], centroids = cv2.kmeans(points, num_clusters, \
 			 		convergence_reqs, 30, cv2.KMEANS_RANDOM_CENTERS) 
 			if num_clusters > 1:
 				silhouette_scores[num_clusters] = metrics.silhouette_score(points, assignments[num_clusters, :], metric='euclidean')
