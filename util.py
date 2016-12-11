@@ -1,8 +1,15 @@
 # Useful functions that will be used across our codebase
+import csv
 import urllib
 import os
 import cv2
 
+
+def csvToList(file):
+	with open(file) as csvfile:
+	    reader = csv.DictReader(csvfile)
+	    res = [row for row in reader]
+    	return res
 
 
 # Takes in a url or path, spits out a name
@@ -25,7 +32,7 @@ def splitPDF(name):
 Given an image fileName, display it
 Optional: display with bounding boxes
 """
-def showImage(imgfile, , color=None, boundingBoxes=None, bbColor=None):
+def showImage(imgfile, color=None, boundingBoxes=None, bbColor=None):
 	img = cv2.imread(imgfile, cv2.IMREAD_GRAYSCALE) #actually change the color scheme
 	if boundingBoxes is not None:
 		for bb in boundingBoxes:
