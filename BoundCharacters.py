@@ -13,38 +13,66 @@ WIDTH_MIN = 1
 HEIGHT_MIN = 2
 
 
-
-for i in range(1, len(sys.argv)):
-	img = cv2.imread(sys.argv[i], cv2.IMREAD_GRAYSCALE)
-	print(img.shape)
-
-	# Detect edges
-	# edges = cv2.Canny(img,100,200)
-
-
-	# Blur image 
-	# blurred = cv2.GaussianBlur(edges, (5,5), 0)
-
+def getCountours(img):
 	contours, _ = cv2.findContours(cv2.adaptiveThreshold(img, 255, 1, 1, 11, 2), 
 		cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+	return contours
 
+def getBoundingBox(contour):
+	potential_bounding_box = cv2.boundingRect(contour) 
+	x, y, w, h = potential_bounding_box
+	return x, y, w, h
+
+def isCharacterSized(w,h):
+	return (w < WIDTH_MAX and h < HEIGHT_MAX and w > WIDTH_MIN and h > HEIGHT_MIN)
+
+def getCharacterBoundingBoxes(filename):
 	bounding_boxes = []
 
-	print len(contours)
+	img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+	contours = getCountours(img)
 	for contour in contours:
-		potential_bounding_box = cv2.boundingRect(contour) 
-		x, y, w, h = potential_bounding_box
-		
-
-	# plt.imshow(img, cmap='gray')
-
-		if w < WIDTH_MAX and h < HEIGHT_MAX and w > WIDTH_MIN and h > HEIGHT_MIN: 
-			bounding_boxes.append(potential_bounding_box)
-			cv2.rectangle(img, (x,y), (x+w, y+h), (0,255,0),2)
+		bb = getBoundingBox(contour)
+		x,y,w,h = bb
+		if isCharacterSized(w,h):
+			bounding_boxes.append(bb)
+	return bounding_boxes
 
 	
 
-	print bounding_boxes
+
+
+# for i in range(1, len(sys.argv)):
+# 	img = cv2.imread(sys.argv[i], cv2.IMREAD_GRAYSCALE)
+# 	print(img.shape)
+
+# 	# Detect edges
+# 	# edges = cv2.Canny(img,100,200)
+
+
+# 	# Blur image 
+# 	# blurred = cv2.GaussianBlur(edges, (5,5), 0)
+
+# 	contours, _ = cv2.findContours(cv2.adaptiveThreshold(img, 255, 1, 1, 11, 2), 
+# 		cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+# 	bounding_boxes = []
+
+# 	print len(contours)
+# 	for contour in contours:
+# 		potential_bounding_box = cv2.boundingRect(contour) 
+# 		x, y, w, h = potential_bounding_box
+		
+
+# 	# plt.imshow(img, cmap='gray')
+
+# 		if w < WIDTH_MAX and h < HEIGHT_MAX and w > WIDTH_MIN and h > HEIGHT_MIN: 
+# 			bounding_boxes.append(potential_bounding_box)
+# 			cv2.rectangle(img, (x,y), (x+w, y+h), (0,255,0),2)
+
+	
+
+# 	print bounding_boxes
 
 
 	# cv2.imshow('image',img)
