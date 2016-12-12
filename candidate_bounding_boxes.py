@@ -25,13 +25,12 @@ def reshapeLabels(labels):
 
 def get_bounding_boxes(points, labels, num_clusters):
 	bounding_boxes = []
+	#print points
 	for cluster_count in range(0, num_clusters):
 		labels_reshape = reshapeLabels(labels)
-		# labels_reshape = np.concatenate((labels[:], labels[:]), axis=1)
-		#labels_reshape = np.repeat(np.transpose(labels[:]), 2, axis=1)
-		#labels_reshape = np.repeat(labels[:], 2, axis=0)
 		filtered_points = points[ labels_reshape[:, :] == (cluster_count - 1) ]
 		filtered_points = np.reshape(filtered_points, (np.shape(filtered_points)[0] / 2, 2))
+		#filtered_points = points[ labels_reshape[:, \:] == (cluster_count - 1) ]
 		if len(filtered_points) == 0: 
 			continue
 		# print np.min(filtered_points[:, 0])
@@ -72,13 +71,17 @@ else:
 	# Run k-means for variable number of clusters 
 	convergence_reqs = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS , 30, 1)
 	points = np.array(character_locations)
+	onedim_points = np.array([(y) for x,y in character_locations])
+	#print points
 	for num_clusters in range(1, MAX_CLUSTERS + 1):
 
-		kmeans_result =  cluster.KMeans(n_clusters = num_clusters, max_iter = 30).fit(points)
+		kmeans_result =  cluster.KMeans(n_clusters = num_clusters, max_iter = 30).fit(onedim_points.reshape(-1, 1))
+		#kmeans_result =  cluster.KMeans(n_clusters = num_clusters, max_iter = 30).fit(points)
 		assignments[num_clusters, :] = kmeans_result.labels_
 		centroids = kmeans_result.cluster_centers_
-		if num_clusters > 1:
-			silhouette_scores[num_clusters] = metrics.silhouette_score(points, assignments[num_clusters, :], metric='euclidean')
+		if num_clusters > 3:
+			# silhouette_scores[num_clusters] = metrics.silhouette_score(points, assignments[num_clusters, :], metric='euclidean')
+			silhouette_scores[num_clusters] = metrics.silhouette_score(onedim_points.reshape(-1, 1), assignments[num_clusters, :], metric='euclidean')
 		else: 
 			silhouette_scores[num_clusters] = 1
 
