@@ -1,0 +1,22 @@
+Convention
+
+Stage 1: download pdfs
+	in:
+		url
+	out:
+		url
+		name
+	effect:
+		pdf downloaded: [name].pdf
+
+Stage 2: split the pdfs:
+	in:
+		name
+	out:
+		name
+
+
+
+(url) -> (url, name) /pdf downloaded
+(name) -> [name](name,page) /pdf split into page images, page images saved
+(name, page) -> (name, page, x, y, w, h) 

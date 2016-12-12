@@ -1,0 +1,83 @@
+Example call: foo.py pageImg boundingBoxes 100
+
+pageImg1.jpg
+pageImg2.jpg
+
+pageImg*.jpg 
+page = argv
+
+
+
+
+
+
+
+##########################################
+preprocessor gets us our pages
+
+bounding boxes get us our 
+
+pdfUrl -> pages
+
+pages -> bbs, labels
+
+# main.py
+import os
+import util
+import BoundCharacters as bc
+import re
+from sklearn.cluster import KMeans
+import math
+import csv
+
+RAW_PDF_DIR = 'rawPDFs'
+PDF_PAGES_DIR = 'pdfPages'
+
+
+# Take in list of pdf URLs - save to local folder
+pdfURLs = util.csvToList("pdfURLs.csv")
+pdfs = [{'name': 'pdf{}'.format(ind), 'url': x['url'], 'path': "{}/pdf{}".format(RAW_PDF_DIR,ind)} for ind, x in enumerate(pdfURLs)]
+
+for pdf in pdfs:
+	name = pdf['name']
+	# util.getPdfFromURL(pdf['url'], pdf['path']) #You can comment this out to save time
+	# util.splitPDF(name, RAW_PDF_DIR, PDF_PAGES_DIR)  #You can comment this out to save time
+	pages = [{'filename':filename, 'pgNum': int(re.split("\.|\-", filename)[1])} for filename in os.listdir('./{}'.format(PDF_PAGES_DIR)) if filename.startswith(name)]
+	pages.sort(key = lambda x: x['pgNum'])
+
+	for page in pages:
+
+		"""see note 1"""
+
+		characterBoxes = bc.getCharacterBoundingBoxes('{}/{}'.format(PDF_PAGES_DIR,page['filename']))
+
+
+		# Save character bounding boxes here
+		print characterBoxes
+
+		with open("characterBoxes/{}-pg{}-charboxes.csv".format(page['filename'], page['pgNum']), "wb") as f:
+		    writer = csv.writer(f)
+		    writer.writerows(characterBoxes)
+
+
+
+		# characterPoints = list(map(lambda p: util.getBoxCenterPoint(p[0],p[1],p[2],p[3]), characterBoxes))
+
+
+
+		# Add an if statement s.t. if there are no points to cluster it doesn't attempt this
+		# if len(characterPoints) > 100:
+		# 	kmeans = KMeans(n_clusters=10, random_state=0).fit(characterPoints)
+		# 	# labelled = kmeans.fit_predict()
+		# 	centroids = [(int(math.floor(x[0])), int(math.floor(x[1]))) for x in kmeans.cluster_centers_]
+
+		# 	# for each centroid assign your points
+		# 	# labelled = kmeans.
+
+
+		# 	print centroids
+
+		# 	util.showImage('{}/{}'.format(PDF_PAGES_DIR,page['filename']), color=None, boundingBoxes=None, bbColor=None)
+		# 	util.showImage('{}/{}'.format(PDF_PAGES_DIR,page['filename']), color=None, boundingBoxes=characterBoxes, bbColor=None)
+		# 	util.showImage('{}/{}'.format(PDF_PAGES_DIR,page['filename']), color=None, points=characterPoints, bbColor=None)
+		# 	util.showImage('{}/{}'.format(PDF_PAGES_DIR,page['filename']), color=None, points=centroids, bbColor=None)

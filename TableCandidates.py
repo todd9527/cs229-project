@@ -2,8 +2,6 @@
 output: save as [name]-page[page]-candidates.csv
 """
 
-
-
 import sys
 import cv2
 import numpy as np
@@ -14,7 +12,6 @@ from sklearn import metrics
 from sklearn import cluster 
 import util
 import math
-
 
 
 PAGE_IMAGES_DIR = 'pdfPages'
@@ -61,8 +58,10 @@ def getBoxCenterPoint(x,y,w,h):
 def drawDot(img, x,y, color=None):
 	cv2.circle(img, (x, y), 3, (0, 255, 0), -1)
 
-
-def clusterCharacters(filename, characterPoints):
+"""
+This is a placeholder - get Todd to fill in his code
+"""
+def clusterCharacters(filename, characterPoints): 
 	if len(characterPoints) > 100:
 		kmeans = cluster.KMeans(n_clusters=10, random_state=0).fit(characterPoints)
 		# labelled = kmeans.fit_predict()
@@ -71,29 +70,6 @@ def clusterCharacters(filename, characterPoints):
 		boundingBoxes = [(p[0]-50, p[1]-50, 100, 100) for p in centroids] #this is a placeholder
 		return boundingBoxes
 	return []
-
-
-
-
-# def showImage(imgfile, color=None, boundingBoxes=None, points=None, bbColor=(200,0,0)):
-# 	img = cv2.imread(imgfile)#, cv2.IMREAD_GRAYSCALE) #actually change the color scheme
-# 	if boundingBoxes is not None:
-# 		for bb in boundingBoxes:
-# 			x,y,w,h = bb
-# 			cv2.rectangle(img, (x,y), (x+w, y+h), bbColor,1)
-# 	if points is not None:
-# 		for point in points:
-# 			x,y = point
-# 			cv2.circle(img, (x,y), 3, (0, 255, 0), -1)
-
-# 	cv2.imshow('image',img)
-# 	cv2.waitKey(0)
-# 	cv2.destroyAllWindows()
-
-
-
-
-
 
 def getPageTableCandidates(name, page):
 	pageFile = "{}/{}-page-{}.jpg".format(PAGE_IMAGES_DIR, name, page)
@@ -105,74 +81,9 @@ def getPageTableCandidates(name, page):
 	# util.showImage(pageFile, boundingBoxes=boundingBoxes)
 	for bb in boundingBoxes:
 		x,y,w,h = bb
-		# util.
 		print x,y,w,h
-	# clusters = 
-
-
-	# for point in characterPoints:
-	# 	drawDot(img, point[0], point[1], (255,0,0))
-	# cv2.imshow('image',img)
-	# cv2.waitKey(0)
-	# cv2.destroyAllWindows()
-# 			x,y = point
-# 			cv2.circle(img, (x,y), 3, (0, 255, 0), -1)
-
-
-
-
-#from here get the actual bounding boxes
-# for bb in characterBoxes:
-# 	x,y,w,h = bb
-# 	cv2.rectangle(img, (x,y), (x+w, y+h), (0,255,0),1)
-
-
-
-
-
-
-
-
 
 name = sys.argv[1]
 page = sys.argv[2]
 getPageTableCandidates(name, page)
 
-
-
-# cv2.imshow('image',img)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-
-# display
-# ef showImage(imgfile, color=None, boundingBoxes=None, points=None, bbColor=(200,0,0)):
-# 	img = cv2.imread(imgfile)#, cv2.IMREAD_GRAYSCALE) #actually change the color scheme
-# 	if boundingBoxes is not None:
-# 		for bb in boundingBoxes:
-# 			x,y,w,h = bb
-# 			cv2.rectangle(img, (x,y), (x+w, y+h), bbColor,1)
-# 	if points is not None:
-# 		for point in points:
-# 			x,y = point
-# 			cv2.circle(img, (x,y), 3, (0, 255, 0), -1)
-
-	# cv2.imshow('image',img)
-	# cv2.waitKey(0)
-	# cv2.destroyAllWindows()
-
-# for x in characterBoxes:
-# 	print x
-
-# characterBoxes = bc.getCharacterBoundingBoxes('{}/{}'.format(PDF_PAGES_DIR,page['filename']))
-
-#######################
-
-# import sys
-
-
-# infile = sys.argv[1]
-
-
-
-
-	
