@@ -26,7 +26,10 @@ CONV_FILTER_SIZE = 2
 DOWNSAMPLE_SIZE = 2    # Side length of downsampling square 
 
 def resize_images(image_list): 
-	return [scipy.misc.imresize(image, (IMG_HEIGHT, IMG_WIDTH)).astype(np.float32) for image in image_list]
+	return [resize_image(image) for image in image_list]
+
+def resize_image(image):
+	return scipy.misc.imresize(image, (IMG_HEIGHT, IMG_WIDTH)).astype(np.float32)
 
 def init_cnn_model(): 
 	# Rotate input images 
