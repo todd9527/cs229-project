@@ -9,5 +9,5 @@ name = sys.argv[1]
 numPages = int(sys.argv[2])
 
 for page in range(0,numPages):
-	cmd = "python TableCandidates.py {} {} > {}/{}-page-{}-boundingBoxes.csv".format(name, page, BOUNDING_BOX_DIR, name, page)
+	cmd = "python TableCandidates.py {} {} > {}/{}-page-{}-{}.csv".format(name, page, BOUNDING_BOX_DIR, name, page, BOUNDING_BOX_DIR)
 	system(cmd)
