@@ -74,11 +74,12 @@ def clusterCharacters(filename, characterPoints):
 def getPageTableCandidates(name, page):
 	pageFile = "{}/{}-page-{}.jpg".format(PAGE_IMAGES_DIR, name, page)
 	img = cv2.imread(pageFile)
+	# util.showImage(pageFile)
 	characterBoxes = getCharacterBoundingBoxes(img)
 	characterPoints = [getBoxCenterPoint(x,y,w,h) for x,y,w,h in characterBoxes]
 	# util.showImage(pageFile, points=characterPoints)
 	boundingBoxes = clusterCharacters(pageFile, characterPoints)
-	# util.showImage(pageFile, boundingBoxes=boundingBoxes)
+	util.showImage(pageFile, boundingBoxes=boundingBoxes)
 	for bb in boundingBoxes:
 		x,y,w,h = bb
 		print x,y,w,h
