@@ -96,6 +96,7 @@ for j in range(SELECTED_CLUSTERS):
 
 	for bounding_box in bounding_boxes:
 		xmin, xmax, ymin, ymax = bounding_box
+		print '{} {} {} {}'.format(xmin, xmax, ymin, ymax)
 		# writer.writerow([xmin, xmax, ymin, ymax])
 
 
