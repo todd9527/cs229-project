@@ -11,8 +11,8 @@ from sklearn import cluster
 from matplotlib import pyplot as plt
 import util
 
-MAX_CLUSTERS = 12 # Maximum number of possible clusters per image 
-SELECTED_CLUSTERS = 5 # Must be <= MAX_CLUSTERS 
+MAX_CLUSTERS = 12 # Maximum number of possible clusters per image    
+SELECTED_CLUSTERS = 4 # Must be <= MAX_CLUSTERS 
 #OUTPUT_FILENAME = 'candidate_boxes_' # Do not include csv extension 
 # OUTPUT_DIR = 'BoundingBoxes'
 INPUT_DIR = 'CharacterBoxes'
@@ -26,10 +26,8 @@ def reshapeLabels(labels):
 def get_bounding_boxes(points, labels, num_clusters):
 	bounding_boxes = []
 	for cluster_count in range(0, num_clusters):
-		labels_reshape = reshapeLabels(labels)
-		# labels_reshape = np.concatenate((labels[:], labels[:]), axis=1)
-		#labels_reshape = np.repeat(np.transpose(labels[:]), 2, axis=1)
-		#labels_reshape = np.repeat(labels[:], 2, axis=0)
+		#labels_reshape = reshapeLabels(labels)
+		labels_reshape - labels
 		filtered_points = points[ labels_reshape[:, :] == (cluster_count - 1) ]
 		filtered_points = np.reshape(filtered_points, (np.shape(filtered_points)[0] / 2, 2))
 		if len(filtered_points) == 0: 
@@ -71,7 +69,8 @@ else:
 
 	# Run k-means for variable number of clusters 
 	convergence_reqs = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS , 30, 1)
-	points = np.array(character_locations)
+	#points = np.array(character_locations)
+	points = np.array([y for x,y in character_locations])
 	for num_clusters in range(1, MAX_CLUSTERS + 1):
 
 		kmeans_result =  cluster.KMeans(n_clusters = num_clusters, max_iter = 30).fit(points)
