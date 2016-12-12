@@ -47,22 +47,29 @@ def init_cnn_model():
 	model = tflearn.DNN(network)
 
 	return model 
-											    # (or have this taken care of in script that compiles together all of the images)
-def train_model(cropped_train_images, labels):  # NOTE: perhaps contain label filenames, bounding box filenames, and image filenames
-	# Train using CNN 
-	model = init_cnn_model()
-	model.fit(resize_images(cropped_train_images), labels, n_epoch=100, shuffle=True)
-	model.save(MODEL_FILENAME)
 
-def test_model(cropped_test_images, labels):
-	model = init_cnn_model()
-	model.load(MODEL_FILENAME)
-    preds = [ model.predict(image) for image in cropped_test_images]
-    correct = [labels[i] = preds[i] for i in range(len(preds))]
-    correct_true = [labels[i] == 1 and preds[i] == 1 for i in range(len(preds))]
-    print "------Table Locator CNN--------"
-    print "Accuracy = %f", len(correct) / len(preds)
-    print "Recall = %f", len(correct_true) / sum(labels)
+class CNN_Model():
+
+	def __init__(self):
+		self.model = init_cnn_model()
+
+												    # (or have this taken care of in script that compiles together all of the images)
+	def train_model(self, cropped_train_images, labels):  # NOTE: perhaps contain label filenames, bounding box filenames, and image filenames
+		# Train using CNN 
+		self.model = init_cnn_model()
+		self.model.fit(resize_images(cropped_train_images), labels, n_epoch=100, shuffle=True)
+		self.model.save(MODEL_FILENAME)
+
+	def test_model(self, cropped_test_images, labels):
+		self.model = init_cnn_model()
+		self.model.load(MODEL_FILENAME)
+	    preds = [ self.model.predict(image) for image in cropped_test_images]
+	    correct = [labels[i] = preds[i] for i in range(len(preds))]
+	    correct_true = [labels[i] == 1 and preds[i] == 1 for i in range(len(preds))]
+	    print "------Table Locator CNN--------"
+	    print "Accuracy = %f", len(correct) / len(preds)
+	    print "Recall = %f", len(correct_true) / sum(labels)
+	    #TODO: add precision
 
 
 
