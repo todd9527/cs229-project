@@ -11,8 +11,8 @@ from sklearn import cluster
 from matplotlib import pyplot as plt
 import util
 
-MAX_CLUSTERS = 12 # Maximum number of possible clusters per image 
-SELECTED_CLUSTERS = 5 # Must be <= MAX_CLUSTERS 
+MAX_CLUSTERS = 12 # Maximum number of possible clusters per image    
+SELECTED_CLUSTERS = 4 # Must be <= MAX_CLUSTERS 
 #OUTPUT_FILENAME = 'candidate_boxes_' # Do not include csv extension 
 # OUTPUT_DIR = 'BoundingBoxes'
 INPUT_DIR = 'CharacterBoxes'
@@ -72,7 +72,6 @@ else:
 	convergence_reqs = (cv2.TERM_CRITERIA_MAX_ITER + cv2.TERM_CRITERIA_EPS , 30, 1)
 	points = np.array(character_locations)
 	onedim_points = np.array([(y) for x,y in character_locations])
-	#print points
 	for num_clusters in range(1, MAX_CLUSTERS + 1):
 
 		kmeans_result =  cluster.KMeans(n_clusters = num_clusters, max_iter = 30).fit(onedim_points.reshape(-1, 1))
