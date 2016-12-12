@@ -15,12 +15,19 @@ MAX_CLUSTERS = 12 # Maximum number of possible clusters per image
 SELECTED_CLUSTERS = 3 # Must be <= MAX_CLUSTERS 
 OUTPUT_FILENAME = 'candidate_boxes_' # Do not include csv extension 
 
+def reshapeLabels(labels):
+	result = np.zeros((len(labels), 2))
+	for i in range(len(labels)):
+		result[i, :] = labels[i]
+	return result
+
 def get_bounding_boxes(points, labels, num_clusters):
 	bounding_boxes = []
-	#print labels
 	for cluster_count in range(0, num_clusters):
-		print labels[:]
-		labels_reshape = np.repeat(np.transpose(labels[:]), 2, axis=1)
+		labels_reshape = reshapeLabels(labels)
+		# labels_reshape = np.concatenate((labels[:], labels[:]), axis=1)
+		#labels_reshape = np.repeat(np.transpose(labels[:]), 2, axis=1)
+		#labels_reshape = np.repeat(labels[:], 2, axis=0)
 		filtered_points = points[ labels_reshape[:, :] == (cluster_count - 1) ]
 		filtered_points = np.reshape(filtered_points, (np.shape(filtered_points)[0] / 2, 2))
 		if len(filtered_points) == 0: 
@@ -31,13 +38,8 @@ def get_bounding_boxes(points, labels, num_clusters):
 	return np.array(bounding_boxes)
 
 
-character_location_files = sys.argv[1:]
-
-#print "length = ", len(sys.argv)
-
 for i in range(1, len(sys.argv)):
 	character_locations = [] # Character locations (derived from character bounding boxes) in corresponding pdf 
-	#print sys.argv[i]
 	with open(sys.argv[i], 'rb') as ifile:
 		readerx = csv.reader(ifile)
 		for row in readerx:
@@ -52,7 +54,7 @@ for i in range(1, len(sys.argv)):
 		writer = csv.writer(ofile)
 		
 		assignments = np.zeros((MAX_CLUSTERS + 1, len(character_locations)))
-		# silhouette_scores = np.zeros((MAX_CLUSTERS + 1, 1)) # Best value is 1, worst value is -1 
+		#silhouette_scores = np.zeros((MAX_CLUSTERS + 1, 1)) # Best value is 1, worst value is -1 
 		silhouette_scores = [0] * (MAX_CLUSTERS + 1)  # Best value is 1, worst value is -1 
 		
 
@@ -63,31 +65,16 @@ for i in range(1, len(sys.argv)):
 
 			kmeans_result =  cluster.KMeans(n_clusters = num_clusters, max_iter = 30).fit(points)
 			assignments[num_clusters, :] = kmeans_result.labels_
-			#print assignments[num_clusters, :]
-			# print "assignments = ", assignments[num_clusters, :]
-			# print "assignments2 = ", kmeans_result.labels_
 			centroids = kmeans_result.cluster_centers_
 			if num_clusters > 1:
-				#print silhouette_scores
 				silhouette_scores[num_clusters] = metrics.silhouette_score(points, assignments[num_clusters, :], metric='euclidean')
 			else: 
 				silhouette_scores[num_clusters] = 1
 
-		#indexes = np.argsort(silhouette_scores)
 
-#x = np.array([3, 1, 2])
-#
-		#print np.argsort(np.array(silhouette_scores))
 		indexes = np.array(silhouette_scores).argsort()[::-1]
-		# print silhouette_scores
-		print indexes
-		#print indexes
-
-		#print "assignments = ", assignments[3, :]
-
 		for j in range(SELECTED_CLUSTERS):
 			cluster_index = indexes[j] 
-			#print assignments[cluster_index, :]
 			bounding_boxes = get_bounding_boxes(points, assignments[cluster_index, :], num_clusters)
 			# display here
 			page_num = i
