@@ -12,5 +12,5 @@ numPages = int(numPages)
 
 for page in range(1,numPages+1):
 	# print batch, name, page
-	cmd = "python candidateBoundingBoxes.py {} {} {} > {}/{}-{}-page-{}-{}.csv".format(batch, name, page, BOUNDING_BOX_DIR, batch, name, page, BOUNDING_BOX_DIR)
+	cmd = "python candidate_bounding_boxes.py {} {} {} > {}/{}-{}-page-{}-{}.csv".format(batch, name, page, BOUNDING_BOX_DIR, batch, name, page, BOUNDING_BOX_DIR)
 	system(cmd)
