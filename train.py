@@ -31,7 +31,7 @@ def main():
 		with open('{}/{}-{}-page-{}-{}.jpg'.format(LABEL_DIR, batch, pdf_number, page_number, LABEL_DIR)), 'rb') as ifile:
 			readx = csv.reader(ifile)
 			for row in readerx:
-				labels.append(model.resize_image(int(row[0])))
+				labels.append(int(row[0]))
 
 	cnn_model = model.CNN_Model()
 	cnn_model.train(cropped_images, labels)
