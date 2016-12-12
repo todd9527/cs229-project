@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt
 import util
 
 MAX_CLUSTERS = 12 # Maximum number of possible clusters per image 
-SELECTED_CLUSTERS = 3 # Must be <= MAX_CLUSTERS 
+SELECTED_CLUSTERS = 5 # Must be <= MAX_CLUSTERS 
 OUTPUT_FILENAME = 'candidate_boxes_' # Do not include csv extension 
 
 def reshapeLabels(labels):
@@ -79,9 +79,9 @@ for i in range(1, len(sys.argv)):
 			# display here
 			page_num = i
 			# imgfile = "{}/1-page-{}.jpg".format("pdfPages", page_num)
-			imgfile = "{}/1-page-{}.jpg".format("pdfPages", 2)
+			imgfile = "{}/train-1-page-{}.jpg".format("pdfPages", 65)
 
-			#util.showImage(imgfile, color=None, boundingBoxes=bounding_boxes, points=[(int(p[0]),int(p[1])) for p in centroids], bbColor=(200,0,0))
+			util.showImage(imgfile, color=None, boundingBoxes=bounding_boxes, points=[(int(p[0]),int(p[1])) for p in centroids], bbColor=(200,0,0))
 			for bounding_box in bounding_boxes:
 				xmin, xmax, ymin, ymax = bounding_box
 				writer.writerow([xmin, xmax, ymin, ymax])
