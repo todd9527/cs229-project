@@ -5,9 +5,11 @@ import sys
 RAW_PDF_DIR = 'rawPDFs'
 CHARACTER_BOX_DIR = 'CharacterBoxes'
 
-name = sys.argv[1]
-numPages = int(sys.argv[2])
+batch, name, numPages = sys.argv[1:]
+numPages = int(numPages)
+
 
 for page in range(1,numPages+1):
-	cmd = "python FindCharactersOnPage.py {} {} > {}/{}-page-{}-{}.csv".format(name, page, CHARACTER_BOX_DIR, name, page, CHARACTER_BOX_DIR)
+	# print batch, name, page
+	cmd = "python FindCharactersOnPage.py {} {} {} > {}/{}-{}-page-{}-{}.csv".format(batch, name, page, CHARACTER_BOX_DIR, batch, name, page, CHARACTER_BOX_DIR)
 	system(cmd)

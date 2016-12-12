@@ -58,17 +58,16 @@ def getBoxCenterPoint(x,y,w,h):
 def drawDot(img, x,y, color=None):
 	cv2.circle(img, (x, y), 3, (0, 255, 0), -1)
 
-def getPageTableCandidates(name, page):
-	pageFile = "{}/{}-page-{}.jpg".format(PAGE_IMAGES_DIR, name, page)
+def getPageTableCandidates(batch, name, page):
+	pageFile = "{}/{}-{}-page-{}.jpg".format(PAGE_IMAGES_DIR, batch, name, page)
 	img = cv2.imread(pageFile)
-	util.showImage(pageFile)
+	# util.showImage(pageFile)
 	characterBoxes = getCharacterBoundingBoxes(img)
-	util.showImage(pageFile, boundingBoxes=characterBoxes)
+	# util.showImage(pageFile, boundingBoxes=characterBoxes)
 	for cb in characterBoxes:
 		x,y,w,h = cb
-		print x,y,w,h
+		print "{},{},{},{}".format(x,y,w,h)
 
-name = sys.argv[1]
-page = sys.argv[2]
-getPageTableCandidates(name, page)
+batch, name, page = sys.argv[1:]
+getPageTableCandidates(batch, name, page)
 
