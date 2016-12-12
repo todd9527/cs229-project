@@ -9,7 +9,11 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from scipy.ndimage.filters import rank_filter
-# import util
+import csv
+from sklearn import metrics
+from sklearn import cluster 
+import util
+import math
 
 
 
@@ -19,6 +23,10 @@ WIDTH_MAX = 50
 HEIGHT_MAX = 50
 WIDTH_MIN = 1
 HEIGHT_MIN = 2
+MAX_CLUSTERS = 3 # Maximum number of possible clusters per image 
+SELECTED_CLUSTERS = 3 # Must be <= MAX_CLUSTERS 
+OUTPUT_FILENAME = 'candidate_boxes_' # Do not include csv extension 
+
 
 def getCountours(img):
 	gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -29,13 +37,7 @@ def getCountours(img):
 	# 	cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 	return contours
 
-# im = cv2.imread('pitrain.png') im3 = im.copy() gray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY) blur = cv2.GaussianBlur(gray,(5,5),0) thresh = cv2.adaptiveThreshold(blur,255,1,1,11,2) ################# Now finding Contours ################### contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE) samples = np.empty((0,100)) responses = [] keys = [i for i in range(48,58)] for cnt in contours: if cv2.contourArea(cnt)>50: [x,y,w,h] = cv2.boundingRect(cnt)
-
-	contours, _ = cv2.findContours(cv2.adaptiveThreshold(img, 255, 1, 1, 11, 2), 
-		cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-	return contours
-
-def getBoundingBox(contour):
+def getContourBox(contour):
 	potential_bounding_box = cv2.boundingRect(contour) 
 	x, y, w, h = potential_bounding_box
 	return x, y, w, h
@@ -47,19 +49,96 @@ def getCharacterBoundingBoxes(img):
 	bounding_boxes = []
 	contours = getCountours(img)
 	for contour in contours:
-		bb = getBoundingBox(contour)
+		bb = getContourBox(contour)
 		x,y,w,h = bb
 		if isCharacterSized(w,h):
 			bounding_boxes.append(bb)
 	return bounding_boxes
 
+def getBoxCenterPoint(x,y,w,h):
+	return (x + w/2, y + h/2)
+
+def drawDot(img, x,y, color=None):
+	cv2.circle(img, (x, y), 3, (0, 255, 0), -1)
+
+
+def clusterCharacters(filename, characterPoints):
+	if len(characterPoints) > 100:
+		kmeans = cluster.KMeans(n_clusters=10, random_state=0).fit(characterPoints)
+		# labelled = kmeans.fit_predict()
+		centroids = [(int(math.floor(x[0])), int(math.floor(x[1]))) for x in kmeans.cluster_centers_] #this is also a placeholder
+
+		boundingBoxes = [(p[0]-50, p[1]-50, 100, 100) for p in centroids] #this is a placeholder
+		return boundingBoxes
+	return []
+
+
+
+
+# def showImage(imgfile, color=None, boundingBoxes=None, points=None, bbColor=(200,0,0)):
+# 	img = cv2.imread(imgfile)#, cv2.IMREAD_GRAYSCALE) #actually change the color scheme
+# 	if boundingBoxes is not None:
+# 		for bb in boundingBoxes:
+# 			x,y,w,h = bb
+# 			cv2.rectangle(img, (x,y), (x+w, y+h), bbColor,1)
+# 	if points is not None:
+# 		for point in points:
+# 			x,y = point
+# 			cv2.circle(img, (x,y), 3, (0, 255, 0), -1)
+
+# 	cv2.imshow('image',img)
+# 	cv2.waitKey(0)
+# 	cv2.destroyAllWindows()
+
+
+
+
+
+
+def getPageTableCandidates(name, page):
+	pageFile = "{}/{}-page-{}.jpg".format(PAGE_IMAGES_DIR, name, page)
+	img = cv2.imread(pageFile)
+	characterBoxes = getCharacterBoundingBoxes(img)
+	characterPoints = [getBoxCenterPoint(x,y,w,h) for x,y,w,h in characterBoxes]
+	# util.showImage(pageFile, points=characterPoints)
+	boundingBoxes = clusterCharacters(pageFile, characterPoints)
+	# util.showImage(pageFile, boundingBoxes=boundingBoxes)
+	for bb in boundingBoxes:
+		x,y,w,h = bb
+		# util.
+		print x,y,w,h
+	# clusters = 
+
+
+	# for point in characterPoints:
+	# 	drawDot(img, point[0], point[1], (255,0,0))
+	# cv2.imshow('image',img)
+	# cv2.waitKey(0)
+	# cv2.destroyAllWindows()
+# 			x,y = point
+# 			cv2.circle(img, (x,y), 3, (0, 255, 0), -1)
+
+
+
+
+#from here get the actual bounding boxes
+# for bb in characterBoxes:
+# 	x,y,w,h = bb
+# 	cv2.rectangle(img, (x,y), (x+w, y+h), (0,255,0),1)
+
+
+
+
+
+
+
 
 
 name = sys.argv[1]
 page = sys.argv[2]
+getPageTableCandidates(name, page)
 
-pageFile = "{}/{}-page-{}.jpg".format(PAGE_IMAGES_DIR, name, page)
-img = cv2.imread(pageFile)
+
 
 # cv2.imshow('image',img)
 # cv2.waitKey(0)
@@ -80,14 +159,6 @@ img = cv2.imread(pageFile)
 	# cv2.imshow('image',img)
 	# cv2.waitKey(0)
 	# cv2.destroyAllWindows()
-
-characterBoxes = getCharacterBoundingBoxes(img)
-for bb in characterBoxes:
-	x,y,w,h = bb
-	cv2.rectangle(img, (x,y), (x+w, y+h), (0,255,0),1)
-cv2.imshow('image',img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
 
 # for x in characterBoxes:
 # 	print x

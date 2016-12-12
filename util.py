@@ -8,6 +8,7 @@ import cv2
 
 
 def load(fileName):
+	res = []
 	with open(fileName) as csvfile:
 		reader = csv.DictReader(csvfile)
 		return list(reader)
