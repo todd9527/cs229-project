@@ -61,6 +61,7 @@ class CNN_Model():
 		self.model.save(MODEL_FILENAME)
 
 	def test_model(self, cropped_test_images, labels):
+		cropped_test_images = resize_images(cropped_test_images)
 		self.model = init_cnn_model()
 		self.model.load(MODEL_FILENAME)
 	    preds = [ self.model.predict(image) for image in cropped_test_images]
