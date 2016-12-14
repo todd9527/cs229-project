@@ -6,23 +6,50 @@ import numpy as np
 
 IMG_DIR = 'pdfPages'
 BBOX_DIR = 'BoundingBoxes'
-LABEL_DIR = 'labels'
+LABEL_DIR = 'Labels'
 
 # Returns (X, Y) for training/testing with ML algorithm 
 def prepare_data(batch, name, num_pages): 
 	cropped_images = []
 	labels = [] 
-	for page_num in range(1, num_pages + 1):
+	for page_number in range(1, num_pages + 1):
 		# Add all cropped images 
-		full_image = cv2.imread('{}/{}-{}-page-{}-{}.jpg'.format(IMG_DIR, batch, pdf_number, page_number, IMG_DIR))
-		with open('{}/{}-{}-page-{}-{}.jpg'.format(BBOX_DIR, batch, pdf_number, page_number, BBOX_DIR)), 'rb') as ifile:
-			readerx = csv.reader(ifile)
+		full_image = cv2.imread('{}/{}-{}-page-{}.jpg'.format(IMG_DIR, batch, name, page_number), cv2.IMREAD_GRAYSCALE)
+		# print batch, name, page_number
+		#print np.shape(full_image)
+		# break 
+		# cv2.imshow('image',full_image)
+		# cv2.waitKey(0)
+		# cv2.destroyAllWindows()
+
+
+		with open('{}/{}-{}-page-{}-{}.csv'.format(BBOX_DIR, batch, name, page_number, BBOX_DIR), 'rb') as ifile:
+			readerx = csv.reader(ifile, delimiter=' ')
 			for row in readerx:
-				xmin, xmax, ymin, ymax = row
-				cropped_images.append(model.resize_image(full_image[int(xmin):int(xmax), int(ymin):int(ymax)]))
+				if row != []:
+					row = [int(r) for r in row]
+					xmin, xmax, ymin, ymax = tuple(row)
+					#print row
+					# if xmin >= xmax or ymin >= ymax:
+					# 	print "Predict break here"
+					# else:
+					# 	print "No break predicted"
+					cropped_img = full_image[ymin:ymax+1, xmin:xmax+1]
+					#print cropped_img
+					# cv2.imshow('image',cropped_img)
+					# cv2.waitKey(0)
+					# cv2.destroyAllWindows()
+					cropped_images.append(model.resize_image(cropped_img))
 		# Add all labels 
-		with open('{}/{}-{}-page-{}-{}.jpg'.format(LABEL_DIR, batch, pdf_number, page_number, LABEL_DIR)), 'rb') as ifile:
-			readx = csv.reader(ifile)
-			for row in readerx:
-				labels.append(int(row[0]))
+		with open('{}/{}-{}-page-{}-{}.csv'.format(LABEL_DIR, batch, name, page_number, LABEL_DIR), 'rb') as ifile2:
+			readx = csv.reader(ifile2)
+			#print readx
+			ignore_line = True
+			for curr_row in readx:
+				if ignore_line:
+					ignore_line = False
+					continue
+				if curr_row != []:
+					curr_row = [int(float(r)) for r in curr_row]
+					labels.append(curr_row[0])
 	return (cropped_images, labels)
