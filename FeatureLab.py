@@ -15,6 +15,7 @@ WIDTH_MAX = 50
 HEIGHT_MAX = 50
 WIDTH_MIN = 1
 HEIGHT_MIN = 2
+color = (30,40,150)
 
 # # img = cv2.imread("Table_For_Feature_detection.jpg")
 # # img = cv2.imread("pdfPages/train-1-page-22.jpg")
@@ -46,7 +47,27 @@ charBoxes = [(c[0],c[1], c[0]+c[2],c[1]+c[3]) for c in charBoxes] #x1,y2,x2,y2 f
 
 for c in charBoxes:
 	x,y,x2,y2 = c
-	cv2.rectangle(img, (x,y),(x2,y2), (0,255,0), 3)
-
-
+	cv2.rectangle(img, (x,y),(x2,y2), color,3)
 display(img)
+
+"""
+Black them out
+source: http://www.pyimagesearch.com/2014/08/04/opencv-python-color-detection/
+"""
+
+# # define the list of boundaries
+# boundaries = [
+# 	([0, 250, 0], [0, 56, 200]),
+# 	([86, 31, 4], [220, 88, 50]),
+# 	([25, 146, 190], [62, 174, 250]),
+# 	([103, 86, 65], [145, 133, 128])
+# ]
+
+RedFilter = ([17, 15, 100], [50, 56, 200])
+lower, upper = RedFilter
+lower = np.array(lower, dtype = "uint8")
+upper = np.array(upper, dtype = "uint8")
+mask = cv2.inRange(img, lower, upper)
+output = cv2.bitwise_and(img, img, mask = mask)
+cv2.imshow("images", np.hstack([img, output]))
+cv2.waitKey(0)
