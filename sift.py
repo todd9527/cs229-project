@@ -15,11 +15,17 @@ def main():
 	page_num = int(sys.argv[3])
 
 	cropped_images, labels = model_util.prepare_data(batch, name, page_num)
-	sift = cv2.xfeatures2d.SIFT_create()
+	sift = cv2.SIFT()
 	for cropped_image in cropped_images: 
-		gray_image = cv2.cvtColor(croppped_image,cv2.COLOR_BGR2GRAY)
-		key_points, descriptors = sift.detect(gray_image,None)
+		# gray_image = cv2.cvtColor(cropped_image,cv2.COLOR_BGR2GRAY)
+		key_points, descriptors = sift.detectAndCompute(cropped_image,None)
 		print descriptors
+
+
+
+
+if __name__ == "__main__":
+    main()
 
 
 #**********FOR SIFT FEATURES**************

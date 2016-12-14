@@ -8,6 +8,9 @@ IMG_DIR = 'pdfPages'
 BBOX_DIR = 'BoundingBoxes'
 LABEL_DIR = 'Labels'
 
+IMG_HEIGHT = 64
+IMG_WIDTH = 64
+
 def resize_image(image):
 	temp_img = np.array(cv2.resize(image, (IMG_HEIGHT, IMG_WIDTH)))
 	return np.reshape(temp_img, (IMG_HEIGHT, IMG_WIDTH, 1))
@@ -38,7 +41,7 @@ def prepare_data(batch, name, page_number):
 				# 	print "Predict break here"
 				# else:
 				# 	print "No break predicted"
-				cropped_img = full_image[ymin:ymax+1, xmin:xmax+1]
+				cropped_img = full_image[ymin:ymax, xmin:xmax]
 				#print cropped_img
 				# cv2.imshow('image',cropped_img)
 				# cv2.waitKey(0)

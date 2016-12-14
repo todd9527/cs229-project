@@ -26,6 +26,8 @@ def main():
 	cropped_images, labels = model_util.prepare_data(batch, name, page_num)
 	hog = cv2.HOGDescriptor(winSize,blockSize,blockStride,cellSize,nbins)
 	for cropped_image in cropped_images: 
+		# cv2.imshow('image', cropped_image)
+		# cv2.waitKey(10000)
 		print hog.compute(cropped_image, winStride, padding)
 
 
