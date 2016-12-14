@@ -17,9 +17,9 @@ WIDTH_MIN = 1
 HEIGHT_MIN = 2
 color = (30,40,150)
 
-# # img = cv2.imread("Table_For_Feature_detection.jpg")
+img = cv2.imread("Table_For_Feature_detection.jpg")
 # # img = cv2.imread("pdfPages/train-1-page-22.jpg")
-img = cv2.imread("text.jpg")
+# img = cv2.imread("text.jpg")
 
 
 def display(img):
