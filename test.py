@@ -10,7 +10,7 @@ def main():
 	num_pages = int(sys.argv[3])
 	cropped_images, labels = model_util.prepare_data(batch, name, num_pages)
 	cnn_model = model.CNN_Model()
-	cnn_model.test(cropped_images, labels)
+	cnn_model.test_model(cropped_images, labels)
 
 if __name__ == "__main__":
     main()
