@@ -55,8 +55,8 @@ def showImage(imgfile, color=None, boundingBoxes=None, points=None, bbColor=(200
 	img = cv2.imread(imgfile)#, cv2.IMREAD_GRAYSCALE) #actually change the color scheme
 	if boundingBoxes is not None:
 		for bb in boundingBoxes:
-			x,y,w,h = bb
-			cv2.rectangle(img, (x,y), (x+w, y+h), bbColor,1)
+			xmin,xmax, ymin,ymax = bb
+			cv2.rectangle(img, (xmin,ymin), (xmax, ymax), bbColor,1)
 	if points is not None:
 		for point in points:
 			x,y = point
